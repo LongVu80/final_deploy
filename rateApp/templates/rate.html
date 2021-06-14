@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rate page</title>
+    {% load static %} 
+    <link rel='stylesheet' href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <ul><li><a href="/logout">Log Out</a></li>
+                <li><a href="/profile/">Your Profile</a></li>
+                <li><a href="/users">All Users</a></li>
+                <li><a href="/success/">Daily Feeds</a></li>
+                <li><a href="/zipcode/">Enter new zipcode</a></li>
+                <li><a href="/show_officials/">Officials</a></li>
+                <li></li>
+            </ul>
+        </nav>
+    </header>
+    <Div class="official">
+        <h2>{{ elected_office }}</h2>
+        <h1> -- {{official_name}} --</h1>
+    </Div>
+    
+    <div class="rate">
+        <h3>Rate Your Official</h3>
+        <form action="/addRate/{{official_name}}/{{elected_office}}" method="POST">
+            {% csrf_token %}
+            <section>
+                <select name="rating" id="rating">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            </section>
+            <button type="submit">submit</button>
+        </form>
+    </div>
+    <div class="rating">
+        {% for rating in ratings %}
+        <div>
+            {% if rating.user.id == request.session.user_id %}
+                <p>You rate {{ elected_office }} {{official_name}} a <b>[ {{rating.rating}} ]</b> out of 5 at: {{rating.created_at}} 
+                </p>
+            {% else%}
+                <p> {{rating.user.firstName}} {{rating.user.lastName}} rated {{ elected_office }} {{official_name}} a <b>[ {{rating.rating}} ]</b> out of 5 at: {{rating.created_at}}</p>
+                
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
